@@ -1,6 +1,6 @@
 HOW TO EXECUTE :
 
-pip install flask ttkbootstrap numpy librosa speechrecognition opencv-python fastdtw soundfile fuzzywuzzy cryptography pillow pyaudio
+pip install flask ttkbootstrap numpy librosa speechrecognition opencv-python fastdtw soundfile fuzzywuzzy cryptography pillow pyaudio<br>
 python app.py
 
 
