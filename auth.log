@@ -1,0 +1,169 @@
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:root:Starting setup...
+INFO:root:Recording first voice sample... Speak any sentence.
+INFO:root:No audio detected. Try again.
+INFO:root:Setup failed due to voice recording error.
+INFO:root:Starting setup...
+INFO:root:Recording first voice sample... Speak any sentence.
+INFO:root:No audio detected. Try again.
+INFO:root:Setup failed due to voice recording error.
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:root:Starting setup...
+INFO:root:Recording first voice sample... Speak any sentence.
+INFO:root:Recording second voice sample... Speak another sentence.
+INFO:root:Speak your secret unlock phrase (e.g., 'Open my phone')...
+INFO:root:Setup complete! Voice and phrase saved.
+INFO:root:Authentication Attempt 1/3
+INFO:root:Recording voice for authentication...
+INFO:root:Voice Match Score: 201.21
+INFO:root:Speak your unlock phrase...
+INFO:root:Phrase Similarity: 100%
+INFO:root:Access Granted! Redirecting...
+INFO:root:Authentication successful for laurentblanc@gmail.com at 2025-05-20 19:37:49.313607
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:root:Authentication Attempt 1/3
+INFO:root:Recording voice for authentication...
+INFO:root:Voice Match Score: 221.18
+INFO:root:Speak your unlock phrase...
+INFO:root:Phrase Similarity: 84%
+INFO:root:Authentication failed.
+INFO:root:Authentication Attempt 2/3
+INFO:root:Recording voice for authentication...
+INFO:root:Voice Match Score: 219.92
+INFO:root:Speak your unlock phrase...
+INFO:root:Phrase Similarity: 84%
+INFO:root:Authentication failed.
+INFO:root:Authentication Attempt 3/3
+INFO:root:Recording voice for authentication...
+INFO:root:Voice Match Score: 201.07
+INFO:root:Speak your unlock phrase...
+INFO:root:Phrase Similarity: 100%
+INFO:root:Access Granted! Redirecting...
+INFO:root:Authentication successful for laurentblanc@gmail.com at 2025-05-20 19:38:59.407591
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:45:11] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:45:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:45:16] "[32mPOST /setup HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:45:16] "GET / HTTP/1.1" 200 -
+INFO:root:Starting setup...
+INFO:root:Recording first voice sample... Speak any sentence.
+INFO:root:Recording second voice sample... Speak another sentence.
+INFO:root:Speak your secret unlock phrase (e.g., 'Open my phone')...
+INFO:root:No audio detected. Try again.
+INFO:root:Setup failed due to phrase recording error.
+ERROR:app:Exception on /authenticate [POST]
+Traceback (most recent call last):
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\FlaskedVoiceAuth\app.py", line 38, in authenticate
+    success = voice_app.start_authentication(email)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\FlaskedVoiceAuth\voice_auth.py", line 392, in start_authentication
+    self.setup_button.config(state='disabled')
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\ttkbootstrap\style.py", line 5152, in configure
+    func(self, cnf, **kwargs)
+  File "C:\Python312\Lib\tkinter\__init__.py", line 1722, in configure
+    return self._configure('configure', cnf, kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\tkinter\__init__.py", line 1712, in _configure
+    self.tk.call(_flatten((self._w, cmd)) + self._options(cnf))
+RuntimeError: main thread is not in main loop
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:46:08] "[35m[1mPOST /authenticate HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:46:14] "[32mPOST /authenticate HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:46:14] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:46:20] "[32mPOST /authenticate HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:46:20] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:root:Authentication Attempt 1/3
+INFO:root:Recording voice for authentication...
+INFO:root:Voice Match Score: 201.65
+INFO:root:Speak your unlock phrase...
+ERROR:app:Exception on /authenticate [POST]
+Traceback (most recent call last):
+  File "X:\FlaskedVoiceAuth\voice_auth.py", line 268, in verify_phrase
+    spoken_phrase = self.recognizer.recognize_google(audio).strip().lower()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\speech_recognition\recognizers\google.py", line 262, in recognize_legacy
+    return output_parser.parse(response_text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\speech_recognition\recognizers\google.py", line 134, in parse
+    actual_result = self.convert_to_result(response_text)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\speech_recognition\recognizers\google.py", line 183, in convert_to_result
+    raise UnknownValueError()
+speech_recognition.exceptions.UnknownValueError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ghild\AppData\Roaming\Python\Python312\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\FlaskedVoiceAuth\app.py", line 38, in authenticate
+    success = voice_app.start_authentication(email)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\FlaskedVoiceAuth\voice_auth.py", line 394, in start_authentication
+    result = self.run_authentication(email)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\FlaskedVoiceAuth\voice_auth.py", line 350, in run_authentication
+    phrase_ok = self.verify_phrase(key_data, phrase_data)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\FlaskedVoiceAuth\voice_auth.py", line 276, in verify_phrase
+    self.log_status(f"Error recognizing phrase: {e}")
+  File "X:\FlaskedVoiceAuth\voice_auth.py", line 90, in log_status
+    self.status_text.text.configure(state='normal')
+  File "C:\Python312\Lib\tkinter\__init__.py", line 1722, in configure
+    return self._configure('configure', cnf, kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\tkinter\__init__.py", line 1712, in _configure
+    self.tk.call(_flatten((self._w, cmd)) + self._options(cnf))
+RuntimeError: main thread is not in main loop
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:47:12] "[35m[1mPOST /authenticate HTTP/1.1[0m" 500 -
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:53:40] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:53:57] "[32mPOST /setup HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2025 19:53:57] "GET / HTTP/1.1" 200 -
+INFO:root:Email received: comeon@gmail.com
+INFO:root:Starting setup...
+INFO:root:Recording first voice sample... Speak any sentence.
+INFO:root:Recording second voice sample... Speak another sentence.

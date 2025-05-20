@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voice Authentication</title>
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --primary-dark: #0a58ca;
+      --background: #121212;
+      --card-bg: #1f1f1f;
+      --input-bg: #2a2a2a;
+      --text-color: #ffffff;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #121212, #1a1a1a);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-4px);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #f1f1f1;
+    }
+
+    .credits {
+      font-size: 14px;
+      color: #bbbbbb;
+      margin-bottom: 20px;
+    }
+
+    .flash-messages {
+      margin-bottom: 15px;
+    }
+
+    .flash-success {
+      color: var(--success);
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    .flash-error {
+      color: var(--error);
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    input[type="email"] {
+      background-color: var(--input-bg);
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+      color: #fff;
+      font-size: 16px;
+      transition: border 0.3s ease;
+    }
+
+    input[type="email"]:focus {
+      outline: none;
+      border: 1px solid var(--primary);
+    }
+
+    button {
+      background-color: var(--primary);
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎤 VoiceAuthSystem</h1>
+    <p class="credits">Designed by Aditya, Taragi, Varun, and Priyanshu</p>
+    
+    <div class="flash-messages">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <p class="flash-{{ category }}">{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <form action="/setup" method="POST">
+      <input type="email" name="email" placeholder="Enter your email" required />
+      <button type="submit">Setup Voice</button>
+    </form>
+
+    <form action="/authenticate" method="POST">
+      <input type="email" name="email" placeholder="Enter your email" required />
+      <button type="submit">Authenticate</button>
+    </form>
+  </div>
+</body>
+</html>
