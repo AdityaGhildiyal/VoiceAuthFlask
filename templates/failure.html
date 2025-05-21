@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied | Security Alert</title>
+    <style>
+        :root {
+            --danger-color: #dc3545;
+            --danger-dark: #bd2130;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #f8f9fa;
+            --border-color: rgba(220, 53, 69, 0.5);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(220, 53, 69, 0.15), transparent 70%);
+            z-index: -1;
+        }
+        
+        .container {
+            text-align: center;
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px var(--shadow-color);
+            max-width: 90%;
+            width: 450px;
+            animation: alertPulse 2s ease-in-out infinite;
+            position: relative;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        @keyframes alertPulse {
+            0%, 100% { box-shadow: 0 10px 25px var(--shadow-color); }
+            50% { box-shadow: 0 10px 30px rgba(220, 53, 69, 0.4); }
+        }
+        
+        .alert-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background-color: rgba(220, 53, 69, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .alert-icon::before,
+        .alert-icon::after {
+            content: "";
+            position: absolute;
+            background-color: var(--danger-color);
+        }
+        
+        .alert-icon::before {
+            width: 8px;
+            height: 35px;
+            border-radius: 4px;
+            bottom: 15px;
+        }
+        
+        .alert-icon::after {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            bottom: 10px;
+        }
+        
+        .security-breach {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--danger-color),
+                var(--danger-color) 10px,
+                var(--danger-dark) 10px,
+                var(--danger-dark) 20px
+            );
+            animation: breach 15s linear infinite;
+        }
+        
+        @keyframes breach {
+            0% { background-position: 0 0; }
+            100% { background-position: 560px 0; }
+        }
+        
+        h1 {
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: warning 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes warning {
+            0%, 100% { text-shadow: 0 0 10px rgba(220, 53, 69, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(220, 53, 69, 0.8); }
+        }
+        
+        .message {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .timestamp {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 1.5rem;
+        }
+        
+        .photo-container {
+            position: relative;
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto 1.5rem;
+            border: 2px solid var(--danger-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .photo-container::before {
+            content: "INTRUDER DETECTED";
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            padding: 5px;
+            background-color: rgba(220, 53, 69, 0.8);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .photo-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+            filter: grayscale(30%);
+            transition: all 0.3s ease;
+        }
+        
+        .photo-container img:hover {
+            filter: grayscale(0%);
+        }
+        
+        .photo-error {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--danger-color);
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            margin-top: 0.5rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+        
+        .security-info {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        
+        .ip-address {
+            font-family: monospace;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem;
+                width: 90%;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="security-breach"></div>
+        <div class="alert-icon" aria-hidden="true"></div>
+        <h1>Access Denied</h1>
+        <p class="message">Authentication failed. Security system has detected an unauthorized access attempt.</p>
+        <p class="timestamp" id="timestamp">Timestamp: --</p>
+        
+        <div class="photo-container">
+            <img src="/static/intruder.jpg" alt="Intruder Photo" id="intruderPhoto" onerror="handleImageError()">
+        </div>
+        
+        <p class="security-info">
+            This incident has been logged and reported to the security team.<br>
+            IP Address: <span class="ip-address" id="ipAddress">--</span>
+        </p>
+        
+        <a href="/" class="btn">Return to Login</a>
+    </div>
+
+    <script>
+        function updateTimestamp() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            };
+            document.getElementById('timestamp').textContent = 
+                'Timestamp: ' + now.toLocaleDateString('en-US', options);
+        }
+        
+        function handleImageError() {
+            const img = document.getElementById('intruderPhoto');
+            const container = img.parentElement;
+            
+            img.style.display = 'none';
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'photo-error';
+            errorDiv.innerHTML = 'Image capture unavailable<br>Facial recognition data stored';
+            
+            container.appendChild(errorDiv);
+        }
+        
+        function setRandomIP() {
+            const ip = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+            document.getElementById('ipAddress').textContent = ip;
+        }
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            updateTimestamp();
+            setRandomIP();
+            
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'alert');
+            announcement.setAttribute('aria-live', 'assertive');
+            announcement.className = 'sr-only';
+            announcement.textContent = 'Security alert: Access denied. Authentication failed.';
+            document.body.appendChild(announcement);
+            
+            setTimeout(function() {
+                announcement.remove();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

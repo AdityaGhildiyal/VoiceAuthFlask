@@ -14,7 +14,6 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from ttkbootstrap.scrolled import ScrolledText
 from tkinter import messagebox
-from PIL import Image, ImageTk
 import threading
 import time
 from database import save_user_data, get_user_data
@@ -23,47 +22,36 @@ import queue
 # Setup logging
 logging.basicConfig(filename="auth.log", level=logging.INFO)
 
-class VoiceAuthApp:
+class SetupWindow:
     def __init__(self, root, email_queue):
         self.root = root
         self.email_queue = email_queue
-        self.root.title("Voice Authentication System")
-        self.root.geometry("800x700")
+        self.root.title("Voice Setup")
+        self.root.geometry("600x500")
         self.root.resizable(True, True)
-        self.root.attributes('-fullscreen', False)
 
-        # GUI Elements (Dark Theme)
-        self.label = ttk.Label(root, text="Voice Authentication System", font=("Arial", 18, "bold"), bootstyle="light")
+        # GUI Elements
+        self.label = ttk.Label(root, text="Voice Setup", font=("Arial", 18, "bold"), bootstyle="light")
         self.label.pack(pady=15)
 
         self.email_label = ttk.Label(root, text="Previously entered Email: None", font=("Arial", 12), bootstyle="light")
         self.email_label.pack(pady=5)
 
-        self.status_text = ScrolledText(root, height=15, width=80, font=("Arial", 10), wrap="word",
+        self.status_text = ScrolledText(root, height=10, width=60, font=("Arial", 10), wrap="word",
                                       bootstyle="dark", padding=5)
         self.status_text.pack(pady=15)
-        self.status_text.text.insert("end", "Welcome! Enter your email in the web interface (http://127.0.0.1:5000) to proceed.\n")
+        self.status_text.text.insert("end", "Enter your email in the web interface to start setup.\n")
         self.status_text.text.bind("<Key>", lambda e: "break")
 
         self.progress_bar = ttk.Progressbar(root, bootstyle="primary", mode="determinate", length=300)
         self.progress_bar.pack(pady=10)
         self.progress_bar.pack_forget()
 
-        self.setup_button = ttk.Button(root, text="Setup", command=self.start_setup, bootstyle="primary", width=15)
+        self.setup_button = ttk.Button(root, text="Start Setup", command=self.start_setup, bootstyle="primary", width=15)
         self.setup_button.pack(pady=5)
-
-        self.auth_button = ttk.Button(root, text="Authenticate", command=self.start_authentication, bootstyle="primary", width=15)
-        self.auth_button.pack(pady=5)
-
-        self.fullscreen_button = ttk.Button(root, text="Toggle Fullscreen", command=self.toggle_fullscreen, bootstyle="secondary", width=15)
-        self.fullscreen_button.pack(pady=5)
-
-        self.image_label = ttk.Label(root, text="Intruder Photo (if captured)", font=("Arial", 10), bootstyle="light")
-        self.image_label.pack(pady=15)
 
         # Initialize variables
         self.running = False
-        self.intruder_photo = None
         self.recognizer = sr.Recognizer()
         self.current_email = None
 
@@ -71,51 +59,39 @@ class VoiceAuthApp:
         self.root.after(100, self.check_email_queue)
 
     def check_email_queue(self):
-        """Check for new email in the queue and update label."""
         try:
             email = self.email_queue.get_nowait()
             self.current_email = email
             self.email_label.config(text=f"Previously entered Email: {email}")
             self.log_status(f"Email received: {email}")
-            self.root.deiconify()  # Ensure window is visible
-            self.root.lift()  # Bring window to front
-            self.root.focus_force()  # Focus the window
+            self.root.lift()
+            self.root.focus_force()
         except queue.Empty:
             pass
         self.root.after(100, self.check_email_queue)
 
-    def toggle_fullscreen(self):
-        """Toggle full-screen mode."""
-        is_fullscreen = self.root.attributes('-fullscreen')
-        self.root.attributes('-fullscreen', not is_fullscreen)
-
     def log_status(self, message):
-        """Update status text area with a new message."""
-        self.status_text.text.configure(state='normal')
-        self.status_text.text.insert("end", f"{datetime.now().strftime('%H:%M:%S')}: {message}\n")
-        self.status_text.text.see("end")
-        self.status_text.text.configure(state='disabled')
-        self.root.update()
-        logging.info(message)
+        try:
+            self.status_text.text.configure(state='normal')
+            self.status_text.text.insert("end", f"{datetime.now().strftime('%H:%M:%S')}: {message}\n")
+            self.status_text.text.see("end")
+            self.status_text.text.configure(state='disabled')
+            self.root.update()
+            logging.info(message)
+        except Exception as e:
+            logging.error(f"Error updating status: {str(e)}")
 
     def save_encrypted_phrase(self, phrase):
-        """Encrypt and return the phrase and key."""
-        key = Fernet.generate_key()
-        cipher = Fernet(key)
-        encrypted = cipher.encrypt(phrase.encode())
-        return encrypted, key
-
-    def load_encrypted_phrase(self, key_data, phrase_data):
-        """Decrypt phrase using provided key."""
         try:
-            cipher = Fernet(key_data)
-            return cipher.decrypt(phrase_data).decode().strip().lower()
+            key = Fernet.generate_key()
+            cipher = Fernet(key)
+            encrypted = cipher.encrypt(phrase.encode())
+            return encrypted, key
         except Exception as e:
-            self.log_status(f"Error loading phrase: {e}")
-            return None
+            self.log_status(f"Error encrypting phrase: {str(e)}")
+            return None, None
 
     def extract_features(self, audio_data):
-        """Extract and normalize MFCC features from audio data."""
         try:
             if isinstance(audio_data, bytes):
                 temp_file = 'temp_audio.wav'
@@ -159,7 +135,6 @@ class VoiceAuthApp:
             return None
 
     def average_features(self, audio1, audio2):
-        """Average MFCC features from two audio data."""
         feats1 = self.extract_features(audio1)
         feats2 = self.extract_features(audio2)
         if feats1 is None or feats2 is None:
@@ -171,7 +146,6 @@ class VoiceAuthApp:
         return (feats1 + feats2) / 2
 
     def save_average_voice(self, audio1, audio2):
-        """Save averaged voice features as binary data."""
         avg_feats = self.average_features(audio1, audio2)
         if avg_feats is None:
             self.log_status("Error averaging voice features.")
@@ -189,7 +163,209 @@ class VoiceAuthApp:
             return None
 
     def record_audio(self, prompt, return_data=True):
-        """Record audio and return as binary data or AudioData object."""
+        self.log_status(prompt)
+        with sr.Microphone() as source:
+            self.recognizer.adjust_for_ambient_noise(source, duration=1)
+            try:
+                audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=5)
+                if return_data:
+                    wav_data = audio.get_wav_data(convert_rate=22050)
+                    if len(wav_data) == 0:
+                        self.log_status("Error: Recorded audio is empty.")
+                        return None
+                    return wav_data
+                return audio
+            except sr.WaitTimeoutError:
+                self.log_status("No audio detected. Try again.")
+                return None
+            except Exception as e:
+                self.log_status(f"Error recording audio: {e}")
+                return None
+
+    def run_setup(self, email):
+        try:
+            self.current_email = email
+            self.email_label.config(text=f"Previously entered Email: {email}")
+            self.progress_bar.pack(pady=10)
+            self.progress_bar["value"] = 0
+            self.root.update()
+
+            self.log_status("Starting setup...")
+            audio1 = self.record_audio("Recording first voice sample... Speak any sentence.")
+            if not audio1:
+                self.log_status("Setup failed due to voice recording error.")
+                self.progress_bar.pack_forget()
+                return
+
+            self.progress_bar["value"] = 25
+            self.root.update()
+
+            audio2 = self.record_audio("Recording second voice sample... Speak another sentence.")
+            if not audio2:
+                self.log_status("Setup failed due to voice recording error.")
+                self.progress_bar.pack_forget()
+                return
+
+            self.progress_bar["value"] = 50
+            self.root.update()
+
+            voice_data = self.save_average_voice(audio1, audio2)
+            if not voice_data:
+                self.log_status("Setup failed due to voice processing error.")
+                self.progress_bar.pack_forget()
+                return
+
+            self.progress_bar["value"] = 75
+            self.root.update()
+
+            audio = self.record_audio("Speak your secret unlock phrase (e.g., 'Open my phone')...", return_data=False)
+            if not audio:
+                self.log_status("Setup failed due to phrase recording error.")
+                self.progress_bar.pack_forget()
+                return
+
+            phrase = self.recognizer.recognize_google(audio)
+            phrase_data, key_data = self.save_encrypted_phrase(phrase)
+            if not phrase_data or not key_data:
+                self.log_status("Setup failed due to phrase encryption error.")
+                self.progress_bar.pack_forget()
+                return
+
+            save_user_data(email, voice_data, phrase_data, key_data)
+            self.progress_bar["value"] = 100
+            self.root.update()
+            time.sleep(0.5)
+            self.log_status("Setup complete! Voice and phrase saved.")
+            messagebox.showinfo("Success", "Setup completed successfully!")
+        except Exception as e:
+            self.log_status(f"Setup error: {str(e)}")
+            logging.error(f"Setup error for {email}: {str(e)}")
+            messagebox.showerror("Error", "Setup failed. Please try again.")
+        finally:
+            self.progress_bar.pack_forget()
+            self.running = False
+            self.setup_button.config(state='normal')
+            self.root.destroy()  # Close window
+
+    def start_setup(self, email=None):
+        if self.running:
+            return
+        email = email or self.current_email
+        if not email:
+            messagebox.showerror("Error", "Please enter an email address in the web interface.")
+            return
+        self.running = True
+        self.setup_button.config(state='disabled')
+        threading.Thread(target=self.run_setup, args=(email,), daemon=True).start()
+
+class AuthWindow:
+    def __init__(self, root, email_queue):
+        self.root = root
+        self.email_queue = email_queue
+        self.root.title("Voice Authentication")
+        self.root.geometry("600x500")
+        self.root.resizable(True, True)
+
+        # GUI Elements
+        self.label = ttk.Label(root, text="Voice Authentication", font=("Arial", 18, "bold"), bootstyle="light")
+        self.label.pack(pady=15)
+
+        self.email_label = ttk.Label(root, text="Previously entered Email: None", font=("Arial", 12), bootstyle="light")
+        self.email_label.pack(pady=5)
+
+        self.status_text = ScrolledText(root, height=10, width=60, font=("Arial", 10), wrap="word",
+                                      bootstyle="dark", padding=5)
+        self.status_text.pack(pady=15)
+        self.status_text.text.insert("end", "Enter your email in the web interface to start authentication.\n")
+        self.status_text.text.bind("<Key>", lambda e: "break")
+
+        self.auth_button = ttk.Button(root, text="Start Authentication", command=self.start_authentication, bootstyle="primary", width=15)
+        self.auth_button.pack(pady=5)
+
+        # Initialize variables
+        self.running = False
+        self.recognizer = sr.Recognizer()
+        self.current_email = None
+        self.auth_result = False
+
+        # Start polling for email
+        self.root.after(100, self.check_email_queue)
+
+    def check_email_queue(self):
+        try:
+            email = self.email_queue.get_nowait()
+            self.current_email = email
+            self.email_label.config(text=f"Previously entered Email: {email}")
+            self.log_status(f"Email received: {email}")
+            self.root.lift()
+            self.root.focus_force()
+        except queue.Empty:
+            pass
+        self.root.after(100, self.check_email_queue)
+
+    def log_status(self, message):
+        try:
+            self.status_text.text.configure(state='normal')
+            self.status_text.text.insert("end", f"{datetime.now().strftime('%H:%M:%S')}: {message}\n")
+            self.status_text.text.see("end")
+            self.status_text.text.configure(state='disabled')
+            self.root.update()
+            logging.info(message)
+        except Exception as e:
+            logging.error(f"Error updating status: {str(e)}")
+
+    def load_encrypted_phrase(self, key_data, phrase_data):
+        try:
+            cipher = Fernet(key_data)
+            return cipher.decrypt(phrase_data).decode().strip().lower()
+        except Exception as e:
+            self.log_status(f"Error loading phrase: {e}")
+            return None
+
+    def extract_features(self, audio_data):
+        try:
+            if isinstance(audio_data, bytes):
+                temp_file = 'temp_audio.wav'
+                with open(temp_file, 'wb') as f:
+                    f.write(audio_data)
+                audio_path = temp_file
+            else:
+                audio_path = audio_data
+
+            y, sr = sf.read(audio_path)
+            if len(y) == 0:
+                self.log_status("Error: Audio data is empty.")
+                if isinstance(audio_data, bytes):
+                    os.remove(temp_file)
+                return None
+
+            if sr != 22050:
+                y = librosa.resample(y, orig_sr=sr, target_sr=22050)
+                sr = 22050
+
+            mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+            if mfccs.size == 0:
+                self.log_status("Error: MFCC extraction resulted in empty features.")
+                if isinstance(audio_data, bytes):
+                    os.remove(temp_file)
+                return None
+
+            mfccs = mfccs.T
+            mfccs_min = np.min(mfccs, axis=0)
+            mfccs_max = np.max(mfccs, axis=0)
+            mfccs = (mfccs - mfccs_min) / (mfccs_max - mfccs_min + 1e-8)
+
+            if isinstance(audio_data, bytes):
+                os.remove(temp_file)
+
+            return mfccs
+        except Exception as e:
+            self.log_status(f"Error extracting features: {str(e)}")
+            if isinstance(audio_data, bytes) and os.path.exists(temp_file):
+                os.remove(temp_file)
+            return None
+
+    def record_audio(self, prompt, return_data=True):
         self.log_status(prompt)
         with sr.Microphone() as source:
             self.recognizer.adjust_for_ambient_noise(source, duration=1)
@@ -210,7 +386,6 @@ class VoiceAuthApp:
                 return None
 
     def capture_intruder(self):
-        """Capture intruder photo using webcam."""
         self.log_status("Capturing intruder photo...")
         cam = cv2.VideoCapture(0)
         if not cam.isOpened():
@@ -223,16 +398,11 @@ class VoiceAuthApp:
         if ret:
             cv2.imwrite("static/intruder.jpg", frame)
             self.log_status("Intruder photo saved.")
-            img = Image.open("static/intruder.jpg")
-            img = img.resize((200, 150), Image.Resampling.LANCZOS)
-            self.intruder_photo = ImageTk.PhotoImage(img)
-            self.image_label.config(image=self.intruder_photo, text="")
         else:
             self.log_status("Failed to capture image.")
         cam.release()
 
     def match_voice(self, stored_voice_data):
-        """Compare recorded voice with stored sample."""
         if not stored_voice_data:
             self.log_status("No authorized voice sample found for this email.")
             return False
@@ -263,7 +433,6 @@ class VoiceAuthApp:
         return distance < 500
 
     def verify_phrase(self, key_data, phrase_data):
-        """Verify spoken phrase against stored phrase."""
         audio = self.record_audio("Speak your unlock phrase...", return_data=False)
         if not audio:
             return False
@@ -280,123 +449,48 @@ class VoiceAuthApp:
             self.log_status(f"Error recognizing phrase: {e}")
             return False
 
-    def run_setup(self, email):
-        """Perform setup process with progress bar."""
-        self.current_email = email
-        self.email_label.config(text=f"Previously entered Email: {email}")
-        self.progress_bar.pack(pady=10)
-        self.progress_bar["value"] = 0
-        self.root.update()
-
-        self.log_status("Starting setup...")
-        audio1 = self.record_audio("Recording first voice sample... Speak any sentence.")
-        if not audio1:
-            self.log_status("Setup failed due to voice recording error.")
-            self.progress_bar.pack_forget()
-            return
-
-        self.progress_bar["value"] = 25
-        self.root.update()
-
-        audio2 = self.record_audio("Recording second voice sample... Speak another sentence.")
-        if not audio2:
-            self.log_status("Setup failed due to voice recording error.")
-            self.progress_bar.pack_forget()
-            return
-
-        self.progress_bar["value"] = 50
-        self.root.update()
-
-        voice_data = self.save_average_voice(audio1, audio2)
-        if not voice_data:
-            self.log_status("Setup failed due to voice processing error.")
-            self.progress_bar.pack_forget()
-            return
-
-        self.progress_bar["value"] = 75
-        self.root.update()
-
-        audio = self.record_audio("Speak your secret unlock phrase (e.g., 'Open my phone')...", return_data=False)
-        if not audio:
-            self.log_status("Setup failed due to phrase recording error.")
-            self.progress_bar.pack_forget()
-            return
-
-        try:
-            phrase = self.recognizer.recognize_google(audio)
-            phrase_data, key_data = self.save_encrypted_phrase(phrase)
-            save_user_data(email, voice_data, phrase_data, key_data)
-            self.progress_bar["value"] = 100
-            self.root.update()
-            time.sleep(0.5)
-            self.log_status("Setup complete! Voice and phrase saved.")
-            messagebox.showinfo("Success", "Setup completed successfully!")
-        except Exception as e:
-            self.log_status(f"Error saving phrase: {e}")
-            self.log_status("Setup failed.")
-        finally:
-            self.progress_bar.pack_forget()
-
     def run_authentication(self, email):
-        """Perform authentication with retries."""
-        self.current_email = email
-        self.email_label.config(text=f"Previously entered Email: {email}")
-        user_data = get_user_data(email)
-        if not user_data:
-            self.log_status("No user data found for this email. Please run Setup first.")
+        try:
+            self.current_email = email
+            self.email_label.config(text=f"Previously entered Email: {email}")
+            user_data = get_user_data(email)
+            if not user_data:
+                self.log_status("No user data found for this email. Please run Setup first.")
+                return False
+
+            voice_data, phrase_data, key_data = user_data
+            max_attempts = 3
+            for attempt in range(max_attempts):
+                self.log_status(f"Authentication Attempt {attempt + 1}/{max_attempts}")
+                voice_ok = self.match_voice(voice_data)
+                phrase_ok = self.verify_phrase(key_data, phrase_data)
+                if voice_ok and phrase_ok:
+                    self.log_status("Access Granted! Redirecting to success page...")
+                    logging.info(f"Authentication successful for {email} at {datetime.now()}")
+                    self.auth_result = True
+                    return True
+                else:
+                    self.log_status("Authentication failed.")
+            self.log_status("Max attempts reached. Capturing intruder photo...")
+            self.capture_intruder()
+            logging.info(f"Authentication failed for {email} at {datetime.now()}")
+            messagebox.showwarning("Failed", "Authentication failed. Intruder photo captured.")
+            return False
+        except Exception as e:
+            self.log_status(f"Authentication error: {str(e)}")
+            logging.error(f"Authentication error for {email}: {str(e)}")
+            messagebox.showerror("Error", "Authentication failed. Please try again.")
             return False
 
-        voice_data, phrase_data, key_data = user_data
-        max_attempts = 3
-        for attempt in range(max_attempts):
-            self.log_status(f"Authentication Attempt {attempt + 1}/{max_attempts}")
-            voice_ok = self.match_voice(voice_data)
-            phrase_ok = self.verify_phrase(key_data, phrase_data)
-            if voice_ok and phrase_ok:
-                self.log_status("Access Granted! Redirecting to success page...")
-                logging.info(f"Authentication successful for {email} at {datetime.now()}")
-                return True
-            else:
-                self.log_status("Authentication failed.")
-        self.log_status("Max attempts reached. Capturing intruder photo...")
-        self.capture_intruder()
-        logging.info(f"Authentication failed for {email} at {datetime.now()}")
-        messagebox.showwarning("Failed", "Authentication failed. Intruder photo captured.")
-        return False
-
-    def start_setup(self, email=None):
-        """Run setup in a separate thread."""
+    def start_authentication(self):
         if self.running:
             return
-        email = email or self.current_email
-        if not email:
+        if not self.current_email:
             messagebox.showerror("Error", "Please enter an email address in the web interface.")
             return
         self.running = True
-        self.setup_button.config(state='disabled')
         self.auth_button.config(state='disabled')
-        threading.Thread(target=self._run_setup_thread, args=(email,), daemon=True).start()
-
-    def _run_setup_thread(self, email):
-        """Wrapper to run setup and re-enable buttons."""
-        self.run_setup(email)
-        self.setup_button.config(state='normal')
+        self.auth_result = self.run_authentication(self.current_email)
         self.auth_button.config(state='normal')
         self.running = False
-
-    def start_authentication(self, email=None):
-        """Run authentication in a separate thread."""
-        if self.running:
-            return False
-        email = email or self.current_email
-        if not email:
-            messagebox.showerror("Error", "Please enter an email address in the web interface.")
-            return False
-        self.running = True
-        self.setup_button.config(state='disabled')
-        self.auth_button.config(state='disabled')
-        result = self.run_authentication(email)
-        self.setup_button.config(state='normal')
-        self.auth_button.config(state='normal')
-        self.running = False
-        return result
+        self.root.destroy()  # Close window
