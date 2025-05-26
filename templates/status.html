@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Authentication - Status</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .status-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+            max-width: 600px;
+        }
+        
+        .status-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            animation: progress-animate 2s infinite;
+        }
+        
+        @keyframes progress-animate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .btn-modern {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .btn-cancel {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        }
+        
+        .btn-cancel:hover {
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        .status-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .email-display {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        
+        .status-starting {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+        }
+        
+        .status-progress {
+            background: rgba(13, 110, 253, 0.1);
+            border-left: 4px solid #0d6efd;
+        }
+        
+        .auto-refresh {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="status-container text-center">
+                    <h1 class="status-header">Operation Status</h1>
+                    
+                    <div class="email-display">
+                        <i class="fas fa-user me-2"></i>
+                        <strong>Email:</strong> {{ email }}
+                    </div>
+                    
+                    {% if operation == 'setup' %}
+                        <div class="status-icon text-primary pulse">
+                            <i class="fas fa-microphone-alt"></i>
+                        </div>
+                        <h3 class="mb-3">Voice Setup in Progress</h3>
+                        
+                        {% if status == 'starting' %}
+                            <div class="status-message status-starting">
+                                <div class="spinner-border text-warning me-3" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <strong>Starting setup window...</strong>
+                                <p class="mb-0 mt-2">Please wait while we initialize the voice setup process.</p>
+                            </div>
+                        {% elif status == 'in_progress' %}
+                            <div class="status-message status-progress">
+                                <div class="progress mb-3">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 100%"></div>
+                                </div>
+                                <strong>Setup window is active</strong>
+                                <p class="mb-0">Please complete the voice registration in the popup window.</p>
+                                <small class="text-muted d-block mt-2">
+                                    You'll need to record two voice samples and set up your unlock phrase.
+                                </small>
+                            </div>
+                        {% endif %}
+                        
+                    {% elif operation == 'auth' %}
+                        <div class="status-icon text-success pulse">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="mb-3">Voice Authentication in Progress</h3>
+                        
+                        {% if status == 'starting' %}
+                            <div class="status-message status-starting">
+                                <div class="spinner-border text-warning me-3" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <strong>Starting authentication window...</strong>
+                                <p class="mb-0 mt-2">Please wait while we initialize the voice authentication process.</p>
+                            </div>
+                        {% elif status == 'in_progress' %}
+                            <div class="status-message status-progress">
+                                <div class="progress mb-3">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 100%"></div>
+                                </div>
+                                <strong>Authentication window is active</strong>
+                                <p class="mb-0">Please complete the voice verification in the popup window.</p>
+                                <small class="text-muted d-block mt-2">
+                                    You'll need to speak for voice matching and say your unlock phrase.
+                                </small>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Instructions:</strong>
+                            <ul class="list-unstyled mt-2 mb-0">
+                                <li>• Look for the popup window that should appear</li>
+                                <li>• If the window doesn't appear, check if it's behind other windows</li>
+                                <li>• Follow the on-screen instructions in the popup</li>
+                                <li>• Keep your microphone accessible and speak clearly</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('cancel') }}" class="btn btn-modern btn-cancel me-3">
+                            <i class="fas fa-times me-2"></i>Cancel Operation
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-modern">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                    </div>
+                    
+                    <div class="auto-refresh">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        This page will automatically refresh every 3 seconds
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash messages modal (if any) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+                {% for category, message in messages %}
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <i class="fas fa-{% if category == 'error' %}exclamation-triangle text-danger{% elif category == 'success' %}check-circle text-success{% else %}info-circle text-primary{% endif %} me-2"></i>
+                            <strong class="me-auto">
+                                {% if category == 'error' %}Error{% elif category == 'success' %}Success{% else %}Info{% endif %}
+                            </strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                        </div>
+                        <div class="toast-body">{{ message }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-refresh the page every 3 seconds to check status
+        setTimeout(function() {
+            window.location.reload();
+        }, 3000);
+        
+        // Hide toasts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(function(toast) {
+                setTimeout(function() {
+                    const bsToast = new bootstrap.Toast(toast);
+                    bsToast.hide();
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
