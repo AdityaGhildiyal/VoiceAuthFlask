@@ -3,229 +3,547 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Access Granted</title>
+    <title>Access Granted - VoiceAuth Pro</title>
     <style>
         :root {
-            --success-color: #28a745;
-            --success-color-dark: #218838;
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #f8f9fa;
-            --shadow-color: rgba(0, 0, 0, 0.3);
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #8b5cf6;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #0f0f23;
+            --surface: #1a1a2e;
+            --surface-light: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.5);
+            --glow: rgba(16, 185, 129, 0.3);
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            flex-direction: column;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         body::before {
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(40, 167, 69, 0.1), transparent 70%);
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%);
             z-index: -1;
+            pointer-events: none;
         }
 
-        .container {
-            text-align: center;
-            background-color: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px var(--shadow-color);
-            max-width: 90%;
-            width: 400px;
-            animation: fadeIn 0.6s ease-out;
+        .navbar {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--success), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .nav-link:hover {
+            color: var(--success);
         }
 
-        .success-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            border-radius: 50%;
-            background-color: rgba(40, 167, 69, 0.2);
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--success), var(--secondary));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .main-container {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 2rem;
+        }
+
+        .success-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 
+                0 20px 40px var(--shadow),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--success), transparent);
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: successPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+            }
+        }
+
+        .checkmark {
+            width: 60px;
+            height: 60px;
             position: relative;
         }
 
-        .success-icon::before {
+        .checkmark::before {
             content: "";
+            position: absolute;
             width: 30px;
             height: 15px;
-            border-left: 4px solid var(--success-color);
-            border-bottom: 4px solid var(--success-color);
+            border-left: 4px solid var(--success);
+            border-bottom: 4px solid var(--success);
             transform: rotate(-45deg);
-            position: absolute;
-            top: 28px;
-            left: 25px;
-            animation: checkmark 0.8s ease-in-out forwards;
+            top: 20px;
+            left: 15px;
+            animation: checkmarkDraw 0.8s ease-in-out 0.5s forwards;
             opacity: 0;
         }
 
-        @keyframes checkmark {
-            0% { opacity: 0; transform: rotate(-45deg) scale(0.5); }
-            50% { opacity: 1; transform: rotate(-45deg) scale(1.2); }
-            100% { opacity: 1; transform: rotate(-45deg) scale(1); }
+        @keyframes checkmarkDraw {
+            0% { 
+                opacity: 0; 
+                transform: rotate(-45deg) scale(0.5);
+            }
+            50% { 
+                opacity: 1; 
+                transform: rotate(-45deg) scale(1.2);
+            }
+            100% { 
+                opacity: 1; 
+                transform: rotate(-45deg) scale(1);
+            }
         }
 
-        h1 {
-            color: var(--success-color);
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 700;
             margin-bottom: 1rem;
-            font-size: 2rem;
+            background: linear-gradient(135deg, var(--success), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.2); }
+        }
+
+        .success-message {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .success-details {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+        }
+
+        .detail-value {
+            color: var(--text-primary);
             font-weight: 600;
         }
 
-        p {
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-            opacity: 0.9;
-            line-height: 1.5;
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
         }
 
         .btn {
-            display: inline-block;
-            background-color: var(--success-color);
-            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
             text-decoration: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            cursor: pointer;
             position: relative;
             overflow: hidden;
         }
 
+        .btn-primary {
+            background: linear-gradient(135deg, var(--success), var(--secondary));
+            color: var(--text-primary);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
         .btn:hover {
-            background-color: var(--success-color-dark);
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4);
+            box-shadow: 0 8px 25px var(--glow);
         }
 
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
-        }
-
-        .btn::after {
+        .btn::before {
             content: "";
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
         }
 
-        @keyframes ripple {
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .security-info {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
             0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
             }
             100% {
-                transform: scale(20, 20);
+                transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
         }
 
-        .btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
-        }
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
 
-        .btn:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
+            .nav-links {
+                display: none;
+            }
 
-        @media (max-width: 480px) {
-            .container {
+            .success-card {
                 padding: 2rem;
-                width: 90%;
+                margin: 1rem;
             }
 
-            h1 {
-                font-size: 1.8rem;
+            .success-title {
+                font-size: 2rem;
             }
 
-            p {
-                font-size: 1rem;
+            .action-buttons {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container" role="main">
-        <div class="success-icon" aria-hidden="true"></div>
-        <h1>Access Granted</h1>
-        <p>You have successfully authenticated to the system. You now have access to all authorized resources.</p>
-        <a href="/" class="btn" id="homeBtn">Back to Home</a>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">✅</div>
+                <span>VoiceAuth Pro</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/status" class="nav-link">Status</a></li>
+                <li><a href="/help" class="nav-link">Help</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="success-card">
+            <div class="success-icon">
+                <div class="checkmark"></div>
+            </div>
+            
+            <h1 class="success-title">Access Granted</h1>
+            
+            <p class="success-message">
+                🎉 Congratulations! Your voice has been successfully authenticated. 
+                You now have secure access to all authorized resources and systems.
+            </p>
+            
+            <div class="success-details">
+                <div class="detail-item">
+                    <span class="detail-label">Authentication Method:</span>
+                    <span class="detail-value">Voice Biometric</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Security Level:</span>
+                    <span class="detail-value">High Security</span>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/dashboard" class="btn btn-primary">
+                    <span>🚀</span>
+                    <span>Go to Dashboard</span>
+                </a>
+                <a href="/" class="btn btn-secondary">
+                    <span>🏠</span>
+                    <span>Back to Home</span>
+                </a>
+            </div>
+            
+            <div class="security-info">
+                <p>
+                    <strong>🔒 Security Notice:</strong><br>
+                    Your authentication session is now active and encrypted. 
+                    All activities are logged for security purposes. 
+                    Please log out when finished to maintain account security.
+                </p>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Add ripple effect to button
-        document.getElementById('homeBtn').addEventListener('click', function(e) {
-            const button = e.currentTarget;
-
-            const circle = document.createElement('span');
-            const diameter = Math.max(button.clientWidth, button.clientHeight);
-
-            circle.style.width = circle.style.height = `${diameter}px`;
-            circle.style.left = `${e.clientX - button.offsetLeft - diameter/2}px`;
-            circle.style.top = `${e.clientY - button.offsetTop - diameter/2}px`;
-            circle.classList.add('ripple');
-
-            const ripple = button.getElementsByClassName('ripple')[0];
-            if (ripple) {
-                ripple.remove();
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#10b981', '#06b6d4', '#6366f1', '#8b5cf6'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 100);
             }
+        }
 
-            button.appendChild(circle);
-        });
+        // Button ripple effect
+        function addRippleEffect(button, event) {
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            const ripple = document.createElement('span');
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                left: ${x}px;
+                top: ${y}px;
+                width: ${size}px;
+                height: ${size}px;
+            `;
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
 
-        // Announce success to screen readers
-        window.addEventListener('DOMContentLoaded', function() {
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create confetti effect after a short delay
+            setTimeout(createConfetti, 500);
+            
+            // Add ripple effect to buttons
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    addRippleEffect(this, e);
+                });
+            });
+            
+            // Announce success to screen readers
             const announcement = document.createElement('div');
             announcement.setAttribute('role', 'status');
             announcement.setAttribute('aria-live', 'polite');
-            announcement.className = 'sr-only';
-            announcement.textContent = 'Authentication successful. Access granted.';
+            announcement.style.position = 'absolute';
+            announcement.style.left = '-10000px';
+            announcement.textContent = 'Authentication successful. Access granted to secure system.';
             document.body.appendChild(announcement);
-
-            // Remove after announcement is read
-            setTimeout(function() {
+            
+            setTimeout(() => {
                 announcement.remove();
             }, 3000);
         });
+
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

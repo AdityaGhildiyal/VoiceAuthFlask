@@ -248,6 +248,11 @@ def status():
                          operation=operation, 
                          status='in_progress')
 
+@app.route('/help')
+def help():
+    """Help and support page"""
+    return render_template('help.html')
+
 @app.route('/check_status')
 def check_status():
     """AJAX endpoint to check operation status"""

@@ -3,259 +3,555 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Authentication - Status</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Operation Status - VoiceAuth Pro</title>
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #8b5cf6;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #0f0f23;
+            --surface: #1a1a2e;
+            --surface-light: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.5);
+            --glow: rgba(99, 102, 241, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text-primary);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
         }
-        
-        .status-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin-top: 2rem;
-            max-width: 600px;
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
         }
-        
-        .status-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+
+        .navbar {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        
-        .pulse {
-            animation: pulse 2s infinite;
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-        
-        .progress-bar {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            animation: progress-animate 2s infinite;
-        }
-        
-        @keyframes progress-animate {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .btn-modern {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 25px;
-            padding: 12px 30px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
             text-decoration: none;
-            display: inline-block;
         }
-        
-        .btn-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            color: white;
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            animation: logoFloat 3s ease-in-out infinite;
         }
-        
-        .btn-cancel {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
         }
-        
-        .btn-cancel:hover {
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
         }
-        
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .status-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 
+                0 20px 40px var(--shadow),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .status-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
         .status-header {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin-bottom: 2rem;
+        }
+
+        .status-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-weight: 700;
-            margin-bottom: 1rem;
         }
-        
+
         .email-display {
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
-            padding: 0.5rem 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid #667eea;
-        }
-        
-        .status-message {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
             padding: 1rem;
-            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .status-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-icon.setup {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            color: var(--primary);
+        }
+
+        .status-icon.auth {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+            color: var(--success);
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 20px rgba(99, 102, 241, 0);
+            }
+        }
+
+        .status-message {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+
+        .status-starting {
+            border-left-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .status-progress {
+            border-left-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
             margin: 1rem 0;
         }
-        
-        .status-starting {
-            background: rgba(255, 193, 7, 0.1);
-            border-left: 4px solid #ffc107;
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 4px;
+            animation: progressFlow 2s ease-in-out infinite;
         }
-        
-        .status-progress {
-            background: rgba(13, 110, 253, 0.1);
-            border-left: 4px solid #0d6efd;
+
+        @keyframes progressFlow {
+            0% { width: 30%; }
+            50% { width: 70%; }
+            100% { width: 30%; }
         }
-        
+
+        .instructions {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .instructions h4 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .instructions li::before {
+            content: "→";
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--text-primary);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
         .auto-refresh {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-top: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .refresh-icon {
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .status-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .status-title {
+                font-size: 1.75rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="status-container text-center">
-                    <h1 class="status-header">Operation Status</h1>
-                    
-                    <div class="email-display">
-                        <i class="fas fa-user me-2"></i>
-                        <strong>Email:</strong> {{ email }}
-                    </div>
-                    
-                    {% if operation == 'setup' %}
-                        <div class="status-icon text-primary pulse">
-                            <i class="fas fa-microphone-alt"></i>
-                        </div>
-                        <h3 class="mb-3">Voice Setup in Progress</h3>
-                        
-                        {% if status == 'starting' %}
-                            <div class="status-message status-starting">
-                                <div class="spinner-border text-warning me-3" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <strong>Starting setup window...</strong>
-                                <p class="mb-0 mt-2">Please wait while we initialize the voice setup process.</p>
-                            </div>
-                        {% elif status == 'in_progress' %}
-                            <div class="status-message status-progress">
-                                <div class="progress mb-3">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                         role="progressbar" style="width: 100%"></div>
-                                </div>
-                                <strong>Setup window is active</strong>
-                                <p class="mb-0">Please complete the voice registration in the popup window.</p>
-                                <small class="text-muted d-block mt-2">
-                                    You'll need to record two voice samples and set up your unlock phrase.
-                                </small>
-                            </div>
-                        {% endif %}
-                        
-                    {% elif operation == 'auth' %}
-                        <div class="status-icon text-success pulse">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h3 class="mb-3">Voice Authentication in Progress</h3>
-                        
-                        {% if status == 'starting' %}
-                            <div class="status-message status-starting">
-                                <div class="spinner-border text-warning me-3" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <strong>Starting authentication window...</strong>
-                                <p class="mb-0 mt-2">Please wait while we initialize the voice authentication process.</p>
-                            </div>
-                        {% elif status == 'in_progress' %}
-                            <div class="status-message status-progress">
-                                <div class="progress mb-3">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                         role="progressbar" style="width: 100%"></div>
-                                </div>
-                                <strong>Authentication window is active</strong>
-                                <p class="mb-0">Please complete the voice verification in the popup window.</p>
-                                <small class="text-muted d-block mt-2">
-                                    You'll need to speak for voice matching and say your unlock phrase.
-                                </small>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                    
-                    <div class="mt-4">
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Instructions:</strong>
-                            <ul class="list-unstyled mt-2 mb-0">
-                                <li>• Look for the popup window that should appear</li>
-                                <li>• If the window doesn't appear, check if it's behind other windows</li>
-                                <li>• Follow the on-screen instructions in the popup</li>
-                                <li>• Keep your microphone accessible and speak clearly</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <a href="{{ url_for('cancel') }}" class="btn btn-modern btn-cancel me-3">
-                            <i class="fas fa-times me-2"></i>Cancel Operation
-                        </a>
-                        <a href="{{ url_for('index') }}" class="btn btn-modern">
-                            <i class="fas fa-home me-2"></i>Back to Home
-                        </a>
-                    </div>
-                    
-                    <div class="auto-refresh">
-                        <i class="fas fa-sync-alt me-1"></i>
-                        This page will automatically refresh every 3 seconds
-                    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">🎤</div>
+                <span>VoiceAuth Pro</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/status" class="nav-link active">Status</a></li>
+                <li><a href="/help" class="nav-link">Help</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="status-card">
+            <div class="status-header">
+                <h1 class="status-title">Operation Status</h1>
+            </div>
+            
+            <div class="email-display">
+                <span>👤</span>
+                <strong>Email:</strong> {{ email }}
+            </div>
+            
+            {% if operation == 'setup' %}
+                <div class="status-icon setup">
+                    🎙️
                 </div>
+                <h3 style="margin-bottom: 1rem;">Voice Setup in Progress</h3>
+                
+                {% if status == 'starting' %}
+                    <div class="status-message status-starting">
+                        <div class="spinner"></div>
+                        <strong>Starting setup window...</strong>
+                        <p style="margin: 1rem 0 0 0; color: var(--text-secondary);">
+                            Please wait while we initialize the voice setup process.
+                        </p>
+                    </div>
+                {% elif status == 'in_progress' %}
+                    <div class="status-message status-progress">
+                        <div class="spinner"></div>
+                        <strong>Setup window is active</strong>
+                        <p style="margin: 1rem 0 0 0; color: var(--text-secondary);">
+                            Please complete the voice registration in the popup window.
+                        </p>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <small style="color: var(--text-muted);">
+                            You'll need to record two voice samples and set up your unlock phrase.
+                        </small>
+                    </div>
+                {% endif %}
+                
+            {% elif operation == 'auth' %}
+                <div class="status-icon auth">
+                    🛡️
+                </div>
+                <h3 style="margin-bottom: 1rem;">Voice Authentication in Progress</h3>
+                
+                {% if status == 'starting' %}
+                    <div class="status-message status-starting">
+                        <div class="spinner"></div>
+                        <strong>Starting authentication window...</strong>
+                        <p style="margin: 1rem 0 0 0; color: var(--text-secondary);">
+                            Please wait while we initialize the voice authentication process.
+                        </p>
+                    </div>
+                {% elif status == 'in_progress' %}
+                    <div class="status-message status-progress">
+                        <div class="spinner"></div>
+                        <strong>Authentication window is active</strong>
+                        <p style="margin: 1rem 0 0 0; color: var(--text-secondary);">
+                            Please complete the voice verification in the popup window.
+                        </p>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <small style="color: var(--text-muted);">
+                            You'll need to speak for voice matching and say your unlock phrase.
+                        </small>
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <div class="instructions">
+                <h4>
+                    <span>ℹ️</span>
+                    <strong>Instructions</strong>
+                </h4>
+                <ul>
+                    <li>Look for the popup window that should appear</li>
+                    <li>If the window doesn't appear, check if it's behind other windows</li>
+                    <li>Follow the on-screen instructions in the popup</li>
+                    <li>Keep your microphone accessible and speak clearly</li>
+                    <li>Ensure you're in a quiet environment for best results</li>
+                </ul>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{{ url_for('cancel') }}" class="btn btn-secondary">
+                    <span>❌</span>
+                    <span>Cancel Operation</span>
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <span>🏠</span>
+                    <span>Back to Home</span>
+                </a>
+            </div>
+            
+            <div class="auto-refresh">
+                <span class="refresh-icon">🔄</span>
+                <span>This page will automatically refresh every 3 seconds</span>
             </div>
         </div>
     </div>
 
-    <!-- Flash messages modal (if any) -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
-                {% for category, message in messages %}
-                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="toast-header">
-                            <i class="fas fa-{% if category == 'error' %}exclamation-triangle text-danger{% elif category == 'success' %}check-circle text-success{% else %}info-circle text-primary{% endif %} me-2"></i>
-                            <strong class="me-auto">
-                                {% if category == 'error' %}Error{% elif category == 'success' %}Success{% else %}Info{% endif %}
-                            </strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-                        </div>
-                        <div class="toast-body">{{ message }}</div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Auto-refresh the page every 3 seconds to check status
-        setTimeout(function() {
-            window.location.reload();
-        }, 3000);
+        // Auto-refresh functionality
+        let refreshInterval;
         
-        // Hide toasts after 5 seconds
-        document.addEventListener('DOMContentLoaded', function() {
-            const toasts = document.querySelectorAll('.toast');
-            toasts.forEach(function(toast) {
-                setTimeout(function() {
-                    const bsToast = new bootstrap.Toast(toast);
-                    bsToast.hide();
-                }, 5000);
-            });
+        function startAutoRefresh() {
+            refreshInterval = setInterval(() => {
+                window.location.reload();
+            }, 3000);
+        }
+        
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        }
+        
+        // Start auto-refresh when page loads
+        document.addEventListener('DOMContentLoaded', startAutoRefresh);
+        
+        // Stop auto-refresh when page is about to unload
+        window.addEventListener('beforeunload', stopAutoRefresh);
+        
+        // Pause auto-refresh when tab is not visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAutoRefresh();
+            } else {
+                startAutoRefresh();
+            }
         });
     </script>
 </body>

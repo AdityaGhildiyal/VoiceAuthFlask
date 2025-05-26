@@ -1,0 +1,63 @@
+2025-05-26 09:45:21,569 - INFO - Voice Authentication System Ready
+2025-05-26 09:45:21,570 - INFO - Waiting for operations from web interface...
+2025-05-26 09:45:21,574 - INFO - ==================================================
+2025-05-26 09:45:22,422 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-26 09:45:22,422 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-26 09:45:27,341 - INFO - 127.0.0.1 - - [26/May/2025 09:45:27] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:30,992 - INFO - 127.0.0.1 - - [26/May/2025 09:45:30] "[33mGET /help HTTP/1.1[0m" 404 -
+2025-05-26 09:45:34,823 - INFO - 127.0.0.1 - - [26/May/2025 09:45:34] "[33mGET /help HTTP/1.1[0m" 404 -
+2025-05-26 09:45:38,273 - INFO - 127.0.0.1 - - [26/May/2025 09:45:38] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:38,279 - INFO - 127.0.0.1 - - [26/May/2025 09:45:38] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:41,056 - INFO - 127.0.0.1 - - [26/May/2025 09:45:41] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:41,063 - INFO - 127.0.0.1 - - [26/May/2025 09:45:41] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:41,985 - INFO - 127.0.0.1 - - [26/May/2025 09:45:41] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:41,992 - INFO - 127.0.0.1 - - [26/May/2025 09:45:41] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:42,747 - INFO - 127.0.0.1 - - [26/May/2025 09:45:42] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:42,754 - INFO - 127.0.0.1 - - [26/May/2025 09:45:42] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:43,074 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:43,080 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:43,245 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:43,251 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:43,416 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:43,422 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:43,578 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:43,585 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:43,938 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:43,945 - INFO - 127.0.0.1 - - [26/May/2025 09:45:43] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:44,108 - INFO - 127.0.0.1 - - [26/May/2025 09:45:44] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:45:44,116 - INFO - 127.0.0.1 - - [26/May/2025 09:45:44] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:48,628 - INFO - 127.0.0.1 - - [26/May/2025 09:45:48] "[32mPOST /setup HTTP/1.1[0m" 302 -
+2025-05-26 09:45:48,639 - INFO - === VOICE SETUP OPERATION ===
+2025-05-26 09:45:48,643 - INFO - Email: ghildiyaladitya6@gmail.com
+2025-05-26 09:45:48,647 - INFO - 
+2025-05-26 09:45:48,651 - INFO - This process will:
+2025-05-26 09:45:48,654 - INFO - 1. Record two voice samples for voice recognition
+2025-05-26 09:45:48,657 - INFO - 2. Record your secret unlock phrase
+2025-05-26 09:45:48,664 - INFO - 3. Save encrypted voice data to database
+2025-05-26 09:45:48,668 - INFO - 
+2025-05-26 09:45:48,671 - INFO - Click 'Start Operation' when ready to begin.
+2025-05-26 09:45:48,674 - INFO - Make sure you're in a quiet environment with a working microphone.
+2025-05-26 09:45:48,747 - INFO - 127.0.0.1 - - [26/May/2025 09:45:48] "GET /status HTTP/1.1" 200 -
+2025-05-26 09:45:51,879 - INFO - 127.0.0.1 - - [26/May/2025 09:45:51] "GET /status HTTP/1.1" 200 -
+2025-05-26 09:45:55,013 - INFO - 127.0.0.1 - - [26/May/2025 09:45:55] "GET /status HTTP/1.1" 200 -
+2025-05-26 09:45:55,287 - INFO - 127.0.0.1 - - [26/May/2025 09:45:55] "[32mGET /cancel HTTP/1.1[0m" 302 -
+2025-05-26 09:45:55,294 - INFO - 127.0.0.1 - - [26/May/2025 09:45:55] "GET / HTTP/1.1" 200 -
+2025-05-26 09:45:55,345 - INFO - Operation cancelled by user.
+2025-05-26 09:46:04,268 - INFO - Tkinter window closing
+2025-05-26 09:48:36,362 - INFO - Voice Authentication System Ready
+2025-05-26 09:48:36,363 - INFO - Waiting for operations from web interface...
+2025-05-26 09:48:36,366 - INFO - ==================================================
+2025-05-26 09:48:37,282 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-26 09:48:37,283 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-26 09:48:37,664 - INFO - 127.0.0.1 - - [26/May/2025 09:48:37] "GET / HTTP/1.1" 200 -
+2025-05-26 09:48:39,863 - INFO - 127.0.0.1 - - [26/May/2025 09:48:39] "GET /help HTTP/1.1" 200 -
+2025-05-26 09:48:46,750 - INFO - 127.0.0.1 - - [26/May/2025 09:48:46] "GET /help HTTP/1.1" 200 -
+2025-05-26 09:48:47,368 - INFO - 127.0.0.1 - - [26/May/2025 09:48:47] "GET /help HTTP/1.1" 200 -
+2025-05-26 09:48:47,939 - INFO - 127.0.0.1 - - [26/May/2025 09:48:47] "GET / HTTP/1.1" 200 -
+2025-05-26 09:48:49,627 - INFO - 127.0.0.1 - - [26/May/2025 09:48:49] "GET /help HTTP/1.1" 200 -
+2025-05-26 09:48:52,513 - INFO - 127.0.0.1 - - [26/May/2025 09:48:52] "GET / HTTP/1.1" 200 -
+2025-05-26 09:48:55,450 - INFO - 127.0.0.1 - - [26/May/2025 09:48:55] "[32mGET /status HTTP/1.1[0m" 302 -
+2025-05-26 09:48:55,457 - INFO - 127.0.0.1 - - [26/May/2025 09:48:55] "GET / HTTP/1.1" 200 -
+2025-05-26 09:49:00,503 - INFO - Tkinter window closing
