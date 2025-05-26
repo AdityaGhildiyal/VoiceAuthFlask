@@ -2,6 +2,8 @@ HOW TO EXECUTE :
 
 pip install flask ttkbootstrap numpy librosa speechrecognition opencv-python fastdtw soundfile fuzzywuzzy cryptography pillow pyaudio<br>
 python app.py
+<br>contact the repository owner for the MongoDB_URI
+
 
 
 🔐 Voice Authentication System
