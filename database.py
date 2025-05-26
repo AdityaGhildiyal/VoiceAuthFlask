@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # MongoDB Atlas connection
-MONGODB_URI = os.getenv('MONGODB_URI', "")
+MONGODB_URI = os.getenv('MongoDbURL', "")
 client = MongoClient(MONGODB_URI)
 db = client['voice_auth_db']
 users_collection = db['users']
