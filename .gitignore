@@ -1,4 +1,9 @@
-# Default ignored files
 /shelf/
 /workspace.xml
 .env
+.idea/
+.vscode/
+.gitignore
+.gitignore
+.gitignore
+.gitignore
