@@ -598,7 +598,7 @@ class UnifiedVoiceWindow:
                 self.reset_operation_state()
                 return
 
-            voice_data, phrase_data, key_data = user_data  # Fixed: Unpack 3 values
+            voice_data, phrase_data, key_data = user_data  # Unpack 3 values
             self.auth_attempts += 1
 
             self.log_message(f"Authentication attempt {self.auth_attempts}/{self.max_attempts}")
@@ -631,7 +631,9 @@ class UnifiedVoiceWindow:
 
         except Exception as e:
             self.log_message(f"Authentication error: {str(e)}")
-            self.send_result('error', message=str(e))
+            self.handle_auth_failure()
+        finally:
+            self.progress_bar.pack_forget()
             self.reset_operation_state()
 
     def handle_auth_failure(self):

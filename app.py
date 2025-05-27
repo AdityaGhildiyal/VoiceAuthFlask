@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import threading
 import sqlite3
 from voice_auth import UnifiedVoiceWindow
-from database import init_db, save_user_data, get_user_data
+from database import init_db, save_user_data, get_user_data, save_reset_code, verify_reset_code
 import ttkbootstrap as ttk
 import queue
 import time
@@ -10,6 +10,16 @@ import logging
 import uuid
 import atexit
 from threading import Lock, Event
+import smtplib
+import random
+import string
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key"
@@ -26,6 +36,35 @@ logging.basicConfig(
 
 # Initialize database
 init_db()
+
+# Email configuration
+EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+
+def send_verification_email(email, code):
+    """Send verification code to user's email."""
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = email
+        msg['Subject'] = 'VoiceAuth Pro - Password Reset Verification Code'
+        
+        body = f"""
+        Your verification code for resetting your VoiceAuth Pro profile is: {code}
+        This code will expire in 15 minutes.
+        If you did not request this, please ignore this email.
+        """
+        msg.attach(MIMEText(body, 'plain'))
+        
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(msg)
+        logging.info(f"Verification email sent to {email}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send email: {str(e)}")
+        return False
 
 class VoiceAppManager:
     def __init__(self):
@@ -142,6 +181,12 @@ def setup():
         flash("Email is required", "error")
         return redirect(url_for('index'))
     
+    # Check if user exists
+    user_data = get_user_data(email)
+    if user_data:
+        flash("User already exists. Please click 'Forgot Password' to reset your voice profile.", "error")
+        return redirect(url_for('forgot_password', email=email))
+    
     # Ensure Tkinter window is running
     if not voice_manager.check_status():
         voice_manager.start_tkinter_window()
@@ -202,6 +247,66 @@ def authenticate():
     
     flash("Authentication operation sent to voice interface. Please check the voice window to complete authentication.", "info")
     return redirect(url_for('status'))
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        code = request.form.get('code')
+        
+        if not email:
+            flash("Email is required", "error")
+            return redirect(url_for('forgot_password'))
+        
+        # Check if user exists
+        user_data = get_user_data(email)
+        if not user_data:
+            flash("No account found for this email. Please set up your voice profile first.", "error")
+            return redirect(url_for('index'))
+        
+        # If no code provided, send verification email
+        if not code:
+            verification_code = ''.join(random.choices(string.digits, k=6))
+            if send_verification_email(email, verification_code):
+                save_reset_code(email, verification_code)
+                session['reset_email'] = email
+                flash("Verification code sent to your email. Please enter it below.", "info")
+                return redirect(url_for('forgot_password', email=email))
+            else:
+                flash("Failed to send verification email. Please try again.", "error")
+                return redirect(url_for('forgot_password', email=email))
+        
+        # If code provided, verify it
+        if verify_reset_code(email, code):
+            # Ensure Tkinter window is running
+            if not voice_manager.check_status():
+                voice_manager.start_tkinter_window()
+                time.sleep(1)
+            
+            if not voice_manager.check_status():
+                flash("Voice interface is not available. Please try again.", "error")
+                return redirect(url_for('forgot_password', email=email))
+            
+            # Send setup operation to Tkinter window
+            operation_id = voice_manager.send_operation('setup', email)
+            if not operation_id:
+                flash("Failed to start voice reset. Please try again.", "error")
+                return redirect(url_for('forgot_password', email=email))
+            
+            # Store operation details in session
+            session['operation_id'] = operation_id
+            session['email'] = email
+            session['operation'] = 'setup'
+            session['start_time'] = time.time()
+            
+            flash("Voice reset operation sent to voice interface. Please check the voice window to complete setup.", "info")
+            return redirect(url_for('status'))
+        else:
+            flash("Invalid or expired verification code.", "error")
+            return redirect(url_for('forgot_password', email=email))
+    
+    email = request.args.get('email', '')
+    return render_template('forgot_password.html', email=email)
 
 @app.route('/status')
 def status():
